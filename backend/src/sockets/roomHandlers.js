@@ -31,6 +31,9 @@ const MAX_ROOM_ID_ATTEMPTS = 5;
  * @param {import('./roomRegistry.js').RoomRegistry} roomRegistry
  */
 export function registerRoomHandlers(io, socket, roomRegistry) {
+  socket.onAny((event, ...args) => {
+  console.log('EVENT RECEIVED:', event, args);
+  });
   socket.on('create-room', (payload) => {
     handleCreateRoom(socket, roomRegistry, payload);
   });
@@ -81,18 +84,21 @@ export function startRoomCleanupTask(io, roomRegistry, intervalMs = 60 * 1000) {
  * @param {{ fileMeta?: unknown }} payload
  */
 function handleCreateRoom(socket, roomRegistry, payload) {
+  console.log('handleCreateRoom called', payload);
   const fileMeta = payload?.fileMeta;
-
+  
   if (!isValidFileMeta(fileMeta)) {
     socket.emit('error', {
       code: 'INVALID_FILE_META',
       message: 'fileMeta must include a non-empty "name" (string), '
-        + 'a positive "size" (number), and a "type" (string).',
+      + 'a positive "size" (number), and a "type" (string).',
     });
     return;
   }
-
+  
   const roomId = generateUniqueRoomId(roomRegistry);
+  console.log('room created:', roomId);
+  console.log('registry room:', roomRegistry.getRoom(roomId));
   if (!roomId) {
     socket.emit('error', {
       code: 'ROOM_CREATION_FAILED',
@@ -106,7 +112,7 @@ function handleCreateRoom(socket, roomRegistry, payload) {
 
   socket.join(roomId);
   socket.data.roomId = roomId;
-
+  console.log('EMITTING room-created', roomId);
   socket.emit('room-created', { roomId });
 }
 
@@ -116,7 +122,13 @@ function handleCreateRoom(socket, roomRegistry, payload) {
  * @param {{ roomId?: unknown }} payload
  */
 function handleJoinRoom(socket, roomRegistry, payload) {
+   console.log('handleJoinRoom called', payload);
+
   const roomId = payload?.roomId;
+  
+  console.log('roomExists?', roomRegistry.roomExists(roomId));
+
+  console.log('room:', roomRegistry.getRoom(roomId));
 
   if (!isValidRoomId(roomId)) {
     socket.emit('error', {

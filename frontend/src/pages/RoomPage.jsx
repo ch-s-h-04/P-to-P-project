@@ -6,14 +6,25 @@ import ProgressBar from '../components/TransferProgress/ProgressBar.jsx';
 import SpeedIndicator from '../components/TransferProgress/SpeedIndicator.jsx';
 import FileSummaryCard from '../components/FileSummaryCard/FileSummaryCard.jsx';
 import Toast from '../components/Notifications/Toast.jsx';
+import useSocket from '../hooks/useSocket.js';
 
 export default function RoomPage() {
   const { roomId } = useParams();
+  const { leaveRoom } = useSocket();
+
+  const handleBackToHome = (e) => {
+    e.preventDefault();
+    leaveRoom(roomId);
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 py-6">
       <div className="flex items-center justify-between">
-        <Link to="/" className="text-sm text-slate-400 hover:text-slate-200 flex items-center gap-1">
+        <Link 
+          to="/" 
+          onClick={handleBackToHome}
+          className="text-sm text-slate-400 hover:text-slate-200 flex items-center gap-1"
+        >
           &larr; Back to Home
         </Link>
         <ConnectionStatus />

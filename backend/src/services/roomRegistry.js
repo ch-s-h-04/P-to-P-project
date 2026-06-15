@@ -168,3 +168,7 @@ export class RoomRegistry {
     return expiredRoomIds;
   }
 }
+/**
+ * Singleton registry instance used by the application.
+ */
+export const roomRegistry = new RoomRegistry();
