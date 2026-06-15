@@ -21,7 +21,7 @@ Current implementation uses STUN servers and may fail under restrictive or symme
 
 ---
 
-## Live Demo 
+## Links
 
 **Frontend:** <https://p-to-p-project-k7jug5ffp-ch-s-h-04s-projects.vercel.app/>
 
